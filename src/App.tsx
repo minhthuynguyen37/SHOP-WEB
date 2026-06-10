@@ -6,6 +6,7 @@ import CommunityBoard from './components/CommunityBoard';
 import MapAndContact from './components/MapAndContact';
 import Footer from './components/Footer';
 import ProductDetailsPage from './components/ProductDetailsPage';
+import MessengerChat from './components/MessengerChat';
 import { motion, AnimatePresence } from 'motion/react';
 import { Product } from './types';
 import { CheckCircle, X, Bell, Info } from 'lucide-react';
@@ -194,6 +195,9 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Floating Messenger chat trigger widget for live-chat client relationships */}
+      <MessengerChat />
 
     </div>
   );

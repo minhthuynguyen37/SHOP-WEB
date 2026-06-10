@@ -31,10 +31,10 @@ export default function MapAndContact() {
       mapsIframe: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.460232426312!2d106.700146315334!3d10.776019462145887!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3919.460232!2zMTUxIMSQ4buTbmcgS2jhu59pLCBC4bq_biBOZ2jDqSwgUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaA!5e0!3m2!1svi!2s!4v1689531839811!5m2!1svi!2s'
     },
     hanoi: {
-      address: 'Biệt Thự Số 12, Phố Tràng Tiền, Quận Hoàn Kiếm, Hà Nội (Gần Nhà Hát Lớn)',
+      address: 'Số 68, Đường Nguyễn Năng Tĩnh, Phường Đông Vĩnh, Thành phố Vinh, Nghệ An',
       phone: '0902.666.777',
       hours: '09:00 AM - 09:30 PM',
-      mapsIframe: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.113204961559!2d105.85236731538356!3d21.02813639317585!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3724.1132!2zMTIgVHLDoG5nIFRp4buBbiwgSG_DoG4gS2nhur9tLCBIw6AgTuG7mWk!5e0!3m2!1svi!2s!4v1689531940922!5m2!1svi!2s'
+      mapsIframe: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3779.802148114631!2d105.6560933!3d18.66444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3139ce69623e1bb1%3A0x6bbaeee2bc5fb77e!2zTmd1eeG7hW4gTsSDbmcgVMSpbmgsIMSQw7RuZyBWxKluaCwgVGjDoG5oIHBo4buRIFZpbmgsIE5naOG7pyBBbiwgVmlldG5hbQ!5e0!3m2!1svi!2s!4v1714567891234!5m2!1svi!2s'
     }
   };
 
@@ -232,7 +232,7 @@ export default function MapAndContact() {
                   }`}
                 >
                   <MapPin className="w-3.5 h-3.5" />
-                  Hà Nội
+                  Nguyễn Năng Tĩnh
                 </button>
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function MapAndContact() {
                   </div>
                   <div>
                     <h4 className="font-serif text-xs font-black text-white uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                      Showroom Tina {selectedBranch === 'hcm' ? 'Quận 1, HCMC' : 'Tràng Tiền, Hà Nội'}
+                      Showroom Tina {selectedBranch === 'hcm' ? 'Quận 1, HCMC' : 'Nguyễn Năng Tĩnh'}
                     </h4>
                     <p className="text-slate-300 font-sans text-xs leading-relaxed mb-3">
                       {BRANCHES[selectedBranch].address}
