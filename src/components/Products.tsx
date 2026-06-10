@@ -2,17 +2,21 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { INITIAL_PRODUCTS, CATEGORIES } from '../data';
 import { Product } from '../types';
-import { ShoppingBag, Eye, Heart, X, MessageCircle } from 'lucide-react';
+import { ShoppingBag, Eye, Heart, X, MessageCircle, ChevronDown, ChevronUp, SlidersHorizontal } from 'lucide-react';
 
 interface ProductsProps {
   onNotifyProduct: (product: Product) => void;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
 }
 
-export default function Products({ onNotifyProduct }: ProductsProps) {
-  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+export default function Products({ onNotifyProduct, selectedCategory, setSelectedCategory }: ProductsProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedSize, setSelectedSize] = useState<string>('M');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const subCategories = ['Váy Đầm', 'Sơ Mi', 'Set Đồ', 'Phụ Kiện'];
 
   const filteredProducts = selectedCategory === 'Tất cả'
     ? INITIAL_PRODUCTS
@@ -41,24 +45,96 @@ export default function Products({ onNotifyProduct }: ProductsProps) {
           </p>
         </div>
 
-        {/* Category Filter Tabs with Glass Styling */}
-        <div id="category-tabs" className="flex flex-wrap justify-center items-center gap-3 mb-12">
-          {CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-6 py-2.5 rounded-full text-xs font-sans tracking-widest uppercase font-bold transition-all focus:outline-none cursor-pointer border ${
-                  isSelected
-                    ? 'bg-gold-500 border-gold-500 text-slate-950 shadow-[0_4px_20px_rgba(245,158,11,0.35)]'
-                    : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border-white/10'
-                }`}
+        {/* Category Filter Dropdown with Elegant Glass styling */}
+        <div className="relative max-w-sm mx-auto mb-12 z-30">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="w-full flex items-center justify-between px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-gold-500/50 transition-all duration-300 focus:outline-none cursor-pointer group shadow-lg"
+          >
+            <div className="flex items-center gap-3">
+              <SlidersHorizontal className="w-4 h-4 text-gold-400 group-hover:rotate-90 transition-transform duration-500" />
+              <span className="text-xs uppercase tracking-[0.25em] font-sans font-extrabold text-slate-300">
+                Danh Mục:
+              </span>
+              <span className="text-xs uppercase tracking-[0.15em] font-sans font-bold text-gold-400">
+                {selectedCategory}
+              </span>
+            </div>
+            {isDropdownOpen ? (
+              <ChevronUp className="w-4 h-4 text-gold-400" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-gold-400 transition-colors" />
+            )}
+          </button>
+
+          <AnimatePresence>
+            {isDropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 4, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+                className="absolute left-0 right-0 mt-2 bg-slate-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl overflow-hidden shadow-2xl z-35"
               >
-                {cat}
-              </button>
-            );
-          })}
+                {/* 4 main sub-categories + All option */}
+                <div className="p-2 space-y-1">
+                  <button
+                    onClick={() => {
+                      setSelectedCategory('Tất cả');
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-3 rounded-xl transition-all flex items-center justify-between text-xs font-sans tracking-wider uppercase font-bold cursor-pointer ${
+                      selectedCategory === 'Tất cả'
+                        ? 'bg-gold-500 text-slate-950 shadow-md shadow-gold-500/10'
+                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    <span>✦ Tất cả bộ sưu tập</span>
+                    {selectedCategory === 'Tất cả' && <span className="w-1.5 h-1.5 rounded-full bg-slate-950 animate-ping" />}
+                  </button>
+
+                  <div className="h-[1px] bg-white/5 my-1" />
+
+                  {subCategories.map((cat, idx) => {
+                    const isSelected = selectedCategory === cat;
+                    // Custom luxury sublabels in Vietnamese matching layout style
+                    const subLabels = [
+                      'Đầm lụa bay & đầm cổ yếm ngọc',
+                      'Sơ mi voan tơ thêu tay tinh xảo',
+                      'Blazer Luxe & Set váy quý phái',
+                      'Túi xách da & kính mát retro'
+                    ];
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          setSelectedCategory(cat);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-3.5 rounded-xl transition-all flex items-center justify-between cursor-pointer group ${
+                          isSelected
+                            ? 'bg-gold-500 text-slate-950 shadow-md shadow-gold-500/10'
+                            : 'hover:bg-white/5 text-left text-slate-300'
+                        }`}
+                      >
+                        <div className="flex flex-col text-left">
+                          <span className={`text-[12px] font-sans tracking-widest uppercase font-extrabold ${isSelected ? 'text-slate-950 font-bold' : 'text-slate-200 group-hover:text-gold-400 transition-colors'}`}>
+                            {idx + 1}. {cat}
+                          </span>
+                          <span className={`text-[10px] font-sans font-semibold mt-0.5 ${isSelected ? 'text-slate-800' : 'text-slate-400'}`}>
+                            {subLabels[idx]}
+                          </span>
+                        </div>
+                        {isSelected && (
+                          <div className="w-2 h-2 rounded-full bg-slate-950" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Products Grid */}

@@ -11,6 +11,7 @@ import { CheckCircle, X, Bell, Info } from 'lucide-react';
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('hero');
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [globalToast, setGlobalToast] = useState<{ show: boolean; title: string; message: string }>({
     show: false,
     title: '',
@@ -90,18 +91,29 @@ export default function App() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[40%] bg-gold-600/5 rounded-full blur-[130px] pointer-events-none z-0"></div>
 
       {/* Premium top branding navbar */}
-      <Navbar onScrollTo={handleScrollToSection} activeSection={activeSection} />
+      <Navbar 
+        onScrollTo={handleScrollToSection} 
+        activeSection={activeSection} 
+        onSelectCategory={setSelectedCategory} 
+      />
 
       {/* Main components showcase */}
       <main>
         {/* HERO */}
         <Hero 
-          onExplore={() => handleScrollToSection('products')} 
+          onExplore={() => {
+            setSelectedCategory('Tất cả');
+            handleScrollToSection('products');
+          }} 
           onPostNow={() => handleScrollToSection('board')} 
         />
 
         {/* CLOTHES / PRODUCTS CATALOGUE */}
-        <Products onNotifyProduct={triggerOrderNotification} />
+        <Products 
+          onNotifyProduct={triggerOrderNotification} 
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
 
         {/* INTEGRATED GUEST POSTS/COMMUNITY BOARD ("giới thiệu lô đất, ảnh, tiêu đề") */}
         <CommunityBoard formTriggerRef={boardRef} />
