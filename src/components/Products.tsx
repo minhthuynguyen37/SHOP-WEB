@@ -8,9 +8,10 @@ interface ProductsProps {
   onNotifyProduct: (product: Product) => void;
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
+  onViewDetails?: (product: Product) => void;
 }
 
-export default function Products({ onNotifyProduct, selectedCategory, setSelectedCategory }: ProductsProps) {
+export default function Products({ onNotifyProduct, selectedCategory, setSelectedCategory, onViewDetails }: ProductsProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedSize, setSelectedSize] = useState<string>('M');
@@ -156,7 +157,7 @@ export default function Products({ onNotifyProduct, selectedCategory, setSelecte
                   key={p.id}
                   id={`product-card-${p.id}`}
                   className="group glass-panel glass-panel-hover rounded-2xl overflow-hidden p-3 transition-all duration-300 flex flex-col cursor-pointer"
-                  onClick={() => setSelectedProduct(p)}
+                  onClick={() => onViewDetails ? onViewDetails(p) : setSelectedProduct(p)}
                 >
                   {/* Image wrap with tags */}
                   <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-slate-900">

@@ -5,6 +5,7 @@ import Products from './components/Products';
 import CommunityBoard from './components/CommunityBoard';
 import MapAndContact from './components/MapAndContact';
 import Footer from './components/Footer';
+import ProductDetailsPage from './components/ProductDetailsPage';
 import { motion, AnimatePresence } from 'motion/react';
 import { Product } from './types';
 import { CheckCircle, X, Bell, Info } from 'lucide-react';
@@ -12,6 +13,7 @@ import { CheckCircle, X, Bell, Info } from 'lucide-react';
 export default function App() {
   const [activeSection, setActiveSection] = useState('hero');
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
+  const [selectedProductDetails, setSelectedProductDetails] = useState<Product | null>(null);
   const [globalToast, setGlobalToast] = useState<{ show: boolean; title: string; message: string }>({
     show: false,
     title: '',
@@ -23,18 +25,23 @@ export default function App() {
 
   // Smooth scroll handler
   const handleScrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const navbarOffset = 70;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - navbarOffset;
+    setSelectedProductDetails(null);
+    
+    // Tiny timeout to let the DOM re-render the sections before querying IDs
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const navbarOffset = 70;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - navbarOffset;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-      setActiveSection(sectionId);
-    }
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        setActiveSection(sectionId);
+      }
+    }, 50);
   };
 
   // Observe active sections for dynamic highlight on navbar
@@ -94,32 +101,63 @@ export default function App() {
       <Navbar 
         onScrollTo={handleScrollToSection} 
         activeSection={activeSection} 
-        onSelectCategory={setSelectedCategory} 
+        onSelectCategory={(category) => {
+          setSelectedCategory(category);
+          setSelectedProductDetails(null);
+          setTimeout(() => handleScrollToSection('products'), 80);
+        }} 
       />
 
       {/* Main components showcase */}
       <main>
-        {/* HERO */}
-        <Hero 
-          onExplore={() => {
-            setSelectedCategory('Tất cả');
-            handleScrollToSection('products');
-          }} 
-          onPostNow={() => handleScrollToSection('board')} 
-        />
+        <AnimatePresence mode="wait">
+          {selectedProductDetails ? (
+            <ProductDetailsPage
+              key="details-page"
+              product={selectedProductDetails}
+              onBack={() => {
+                setSelectedProductDetails(null);
+                setTimeout(() => handleScrollToSection('products'), 80);
+              }}
+              onNotifyProduct={triggerOrderNotification}
+              onSelectRelated={(p) => {
+                setSelectedProductDetails(p);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          ) : (
+            <motion.div
+              key="main-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* HERO */}
+              <Hero 
+                onExplore={() => {
+                  setSelectedCategory('Tất cả');
+                  handleScrollToSection('products');
+                }} 
+                onPostNow={() => handleScrollToSection('board')} 
+              />
 
-        {/* CLOTHES / PRODUCTS CATALOGUE */}
-        <Products 
-          onNotifyProduct={triggerOrderNotification} 
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
+              {/* CLOTHES / PRODUCTS CATALOGUE */}
+              <Products 
+                onNotifyProduct={triggerOrderNotification} 
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                onViewDetails={(p) => setSelectedProductDetails(p)}
+              />
 
-        {/* INTEGRATED GUEST POSTS/COMMUNITY BOARD ("giới thiệu lô đất, ảnh, tiêu đề") */}
-        <CommunityBoard formTriggerRef={boardRef} />
+              {/* INTEGRATED GUEST POSTS/COMMUNITY BOARD ("giới thiệu lô đất, ảnh, tiêu đề") */}
+              <CommunityBoard formTriggerRef={boardRef} />
 
-        {/* INTEGRATED MAPS AND CONTACT INFO FORM */}
-        <MapAndContact />
+              {/* INTEGRATED MAPS AND CONTACT INFO FORM */}
+              <MapAndContact />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
       {/* FOOTER */}
