@@ -1,0 +1,6 @@
+{
+  "name": "TINA SHOP",
+  "description": "Cửa hàng thời trang nữ hiện đại kết hợp tính năng đăng tin giới thiệu đa năng và bản đồ tiện ích.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
